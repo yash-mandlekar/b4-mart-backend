@@ -1,0 +1,115 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html,body{
+  height: 100%;
+  width: 100%;
+}
+.item{
+  width: 90vw;
+  height: fit-content;
+  padding-top: 8vmax;
+  padding-left: 3vmax;
+}
+.itemContainer{
+  border-radius: 20px;
+  overflow: hidden;
+  width: 100%;
+  height: fit-content;
+  /* border: 1px solid black; */
+  display: flex;
+  /* align-items: center; */
+  background-color: white;
+  
+}
+.specification{
+  color: #747474;
+  margin-top: -1vmax;
+}
+h4{
+  color: #747474;
+}
+.itemInfo{
+  width: 50%;
+  height: fit-content;
+display: flex;
+flex-direction: column;
+gap: 1vmax;
+  padding: 1vmax;
+  height: fit-content;
+
+}
+.priceOverlap{
+  width: 50%;
+  height: fit-content;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2vmax;
+}
+.itemInfo h2{
+  font-weight: 500;
+  }
+.itemPhoto{
+  width: 60%;
+  height: fit-content;
+  border-right: 1px solid rgba(57, 57, 57, 0.215);
+}
+.itemPhoto img{
+width: 100%;
+object-fit: cover;
+}
+.button {
+  position: relative;
+  width: 150px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  border-radius: 7px;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #34974d;
+  background-color: #3aa856;
+}
+
+.button__text {
+  color: #fff;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.button__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 10px;
+}
+
+.button__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.svg {
+  width: 24px;
+  height: 24px;
+  stroke: #fff;
+}
+
+.button:hover {
+  background: #34974d;
+}
+
+.button:active .button__icon {
+  background-color: #2e8644;
+}
+
+.button:active {
+  border: 1px solid #2e8644;
+}
