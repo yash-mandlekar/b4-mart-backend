@@ -10,7 +10,7 @@ const adminrouter = require("./routes/adminRoutes")
 const cookieParser = require("cookie-parser");
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Allow only your frontend URL
+  origin: 'http://localhost:3000', // Allow only your frontend URL
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // Allow credentials (cookies, HTTP authentication, etc.)
 }));
