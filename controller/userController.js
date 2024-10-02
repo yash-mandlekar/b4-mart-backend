@@ -89,7 +89,7 @@ exports.logout = (req, res) => {
     domain: 'http://localhost:3000/',
     httpOnly: true,
     secure: true,  // Only send cookie over HTTPS
-    sameSite: 'Lax'  // Prevent CSRF attacks
+    sameSite: 'None'  // Adjust based on your deployment
  });
  
   res.json({ message: "Successfully signout!", success: true });
