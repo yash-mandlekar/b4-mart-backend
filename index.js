@@ -13,7 +13,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://dolphin-app-txpas.ondigitalocean.app/",
+      "https://dolphin-app-txpas.ondigitalocean.app",
     ], // Allow only your frontend URL
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true, // Allow credentials (cookies, HTTP authentication, etc.)
