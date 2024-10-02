@@ -86,7 +86,6 @@ exports.verifyotp = catchAsyncErrors(async (req, res) => {
 
 exports.logout = (req, res) => {
   res.clearCookie("token", { 
-    path: '/',
     domain: 'http://localhost:3000/',
     httpOnly: true,
     secure: true,  // Only send cookie over HTTPS
