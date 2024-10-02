@@ -4,16 +4,21 @@ const cors = require("cors");
 require("dotenv").config();
 const session = require("express-session");
 require("./config/connection"); // Ensure this file connects to MongoDB
-const userrouter = require("./routes/userRoutes")
-const shoprouter = require("./routes/shopRoutes")
-const adminrouter = require("./routes/adminRoutes")
+const userrouter = require("./routes/userRoutes");
+const shoprouter = require("./routes/shopRoutes");
+const adminrouter = require("./routes/adminRoutes");
 const cookieParser = require("cookie-parser");
 
-app.use(cors({
-  origin: 'http://localhost:3000', // Allow only your frontend URL
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, // Allow credentials (cookies, HTTP authentication, etc.)
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://dolphin-app-txpas.ondigitalocean.app/",
+    ], // Allow only your frontend URL
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true, // Allow credentials (cookies, HTTP authentication, etc.)
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
