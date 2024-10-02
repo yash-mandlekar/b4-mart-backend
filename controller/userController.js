@@ -85,7 +85,14 @@ exports.verifyotp = catchAsyncErrors(async (req, res) => {
 });
 
 exports.logout = (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", { 
+    path: '/',
+    domain: 'http://localhost:3000/',
+    httpOnly: true,
+    secure: true,  // Only send cookie over HTTPS
+    sameSite: 'Lax'  // Prevent CSRF attacks
+ });
+ 
   res.json({ message: "Successfully signout!", success: true });
 };
 
