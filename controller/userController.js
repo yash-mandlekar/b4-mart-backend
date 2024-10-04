@@ -16,36 +16,6 @@ exports.deleteCollection = async (req, res) => {
   res.json(user);
 };
 
-exports.signup = async (req, res) => {
-  try {
-    const { username, password, email } = req.body;
-    // Check if the user already exists
-    const existingUser = await UserSchema.findOne({ email: email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User is already registered" });
-    }
-
-    // Hash the password
-    const salt = await bcrypt.genSalt(10); // Use 10 rounds for hashing
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Create new user instance
-    const newUser = new UserSchema({
-      username: username, // Using Username from the request
-      email: email,
-      hash: hashedPassword, // Save the hashed password
-    });
-
-    // Save user to the database
-    const saveData = await newUser.save();
-    console.log(saveData);
-    res.status(201).json({ message: "User created successfully" });
-  } catch (error) {
-    console.log("error", error);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
-
 exports.login = catchAsyncErrors(async (req, res) => {
   const { contact, username } = req.body;
   const user = await UserSchema.findOne({ contact: contact });
@@ -75,22 +45,22 @@ exports.verifyotp = catchAsyncErrors(async (req, res) => {
     .exec();
 
   if (!user) {
-    return res.status(401).json({ message: "User not register" });
+    return res.json({ success: false, message: "User not register" });
   }
   if (user.otp == otp) {
     sendtoken({ message: "User Logged In" }, user, 201, res);
   } else {
-    return res.status(401).json({ message: "Wrong Otp" });
+    return res.json({ success: false, message: "Wrong Otp" });
   }
 });
 
 exports.logout = (req, res) => {
-  res.clearCookie("token", { 
+  res.clearCookie("token", {
     httpOnly: true,
-    secure: true,  // Only send cookie over HTTPS
-    sameSite: 'None'  // Adjust based on your deployment
- });
- 
+    secure: true, // Only send cookie over HTTPS
+    sameSite: "None", // Adjust based on your deployment
+  });
+
   res.json({ message: "Successfully signout!", success: true });
 };
 

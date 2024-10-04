@@ -27,7 +27,6 @@ router.put("/profileupdate", profileupdate);
 router.put("/get_address", get_address);
 
 // POST
-router.post("/signup", signup);
 router.post("/login", login);
 router.post("/otp", verifyotp);
 router.post("/add_cart", add_cart);
