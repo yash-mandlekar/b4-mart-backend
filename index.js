@@ -9,12 +9,15 @@ const shoprouter = require("./routes/shopRoutes");
 const adminrouter = require("./routes/adminRoutes");
 const cookieParser = require("cookie-parser");
 
+var origin = [
+  "http://localhost:3000",
+  "https://dolphin-app-txpas.ondigitalocean.app",
+  "https://b4mart.com",
+  "https://b4-mart-frontend.vercel.app",
+]; // Allow only your frontend URL
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://dolphin-app-txpas.ondigitalocean.app",
-    ], // Allow only your frontend URL
+    origin: origin,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true, // Allow credentials (cookies, HTTP authentication, etc.)
   })
@@ -33,7 +36,7 @@ app.use(cookieParser());
 const ErorrHandler = require("./utils/ErrorHandler");
 const { genetatedErrors } = require("./middleware/errors");
 app.use("/api/", userrouter);
-app.use("/api/", shoprouter);
+app.use("/api/shop", shoprouter);
 app.use("/api/admin", adminrouter);
 
 app.all("*", (req, res, next) => {

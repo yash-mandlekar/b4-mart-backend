@@ -1,7 +1,26 @@
 const express = require("express");
-const shoprouter = express.Router();
-const { product_add } = require("../controller/shopController");
+const router = express.Router();
+const {
+  login,
+  add_product,
+  all_product,
+  update_product,
+  delete_product,
+  all_orders,
+} = require("../controller/shopController");
 
-shoprouter.post("/product_add", product_add);
+// Authentication
+router.post("/login", login);
 
-module.exports = shoprouter;
+// Product CRUD Routes
+router
+  .post("/product", add_product)
+  .get("/product", all_product)
+  .put("/product", update_product)
+  .delete("/product", delete_product)
+  .get("/product/:name", all_product);
+
+// Orders Routes
+router.get("/orders", all_orders);
+
+module.exports = router;

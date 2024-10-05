@@ -1,5 +1,5 @@
 const UserSchema = require("../models/userModel");
-const productdetails = require("../models/productModel");
+const productSchema = require("../models/productModel");
 const { sendtoken } = require("../utils/sendToken");
 const { catchAsyncErrors } = require("../middleware/catchAsyncErrors");
 // const bcrypt = require("bcrypt");
@@ -116,7 +116,7 @@ exports.profileupdate = async (req, res) => {
 
 exports.search_product = async (req, res) => {
   try {
-    const product = await productdetails.find({
+    const product = await productSchema.find({
       $or: [
         { product_name: { $regex: req.params.name, $options: "i" } },
         { category: { $regex: req.params.name, $options: "i" } },

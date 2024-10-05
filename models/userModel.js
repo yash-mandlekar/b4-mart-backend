@@ -62,7 +62,7 @@ const userSchema = new mongoose.Schema({
       ref: "product",
     },
   ],
-  order: [
+  orders: [
     {
       customer_id: {
         type: mongoose.Schema.Types.ObjectId,
