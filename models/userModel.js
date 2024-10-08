@@ -5,7 +5,6 @@ const bcrypt = require("bcryptjs");
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: [true, "Username is required"],
     minLength: [3, "username should be atleast 3 character long"],
   },
   contact: {
@@ -62,6 +61,12 @@ const userSchema = new mongoose.Schema({
       ref: "product",
     },
   ],
+  products: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "product",
+    },
+  ],
   orders: [
     {
       customer_id: {
@@ -94,4 +99,4 @@ userSchema.methods.getjwttoken = function () {
   });
 };
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("user", userSchema);

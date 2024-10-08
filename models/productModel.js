@@ -18,7 +18,7 @@ const productSubSchema = new mongoose.Schema({
       "ice cream & frozen desserts",
       "beauty & cosmetics",
       "navratry store",
-      "dairy & breackfast",
+      "dairy & breakfast",
       "instant & frozen food",
       "sweet tooth",
       "sauces & spreads",

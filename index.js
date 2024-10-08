@@ -5,7 +5,6 @@ require("dotenv").config();
 const session = require("express-session");
 require("./config/connection"); // Ensure this file connects to MongoDB
 const userrouter = require("./routes/userRoutes");
-const shoprouter = require("./routes/shopRoutes");
 const adminrouter = require("./routes/adminRoutes");
 const cookieParser = require("cookie-parser");
 
@@ -36,7 +35,6 @@ app.use(cookieParser());
 const ErorrHandler = require("./utils/ErrorHandler");
 const { genetatedErrors } = require("./middleware/errors");
 app.use("/api/", userrouter);
-app.use("/api/shop", shoprouter);
 app.use("/api/admin", adminrouter);
 
 app.all("*", (req, res, next) => {

@@ -2,9 +2,7 @@ const UserSchema = require("../models/userModel");
 const productSchema = require("../models/productModel");
 const { sendtoken } = require("../utils/sendToken");
 const { catchAsyncErrors } = require("../middleware/catchAsyncErrors");
-// const bcrypt = require("bcrypt");
-// const axios = require("axios");
-// const fetch = require("node-fetch");
+
 
 exports.users = async (req, res) => {
   const user = await UserSchema.find();

@@ -20,7 +20,7 @@ router.get("/me", isAuthenticated, getUserDetails);
 router.get("/logout", logout);
 router.get("/users", users);
 router.get("/delete", deleteCollection);
-router.get("/search_product/:name", search_product);
+router.get("/product/:name", search_product);
 
 // PUT
 router.put("/profileupdate", profileupdate);
