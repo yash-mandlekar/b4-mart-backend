@@ -7,10 +7,10 @@ const {
   add_cart,
   get_address,
   deleteCollection,
-  users,
   verifyotp,
   logout,
-  getUserDetails
+  getUserDetails,
+  single_product
 } = require("../controller/userController");
 const { isAuthenticated } = require("../middleware/auth");
 const router = express.Router();
@@ -18,8 +18,8 @@ const router = express.Router();
 // GET
 router.get("/me", isAuthenticated, getUserDetails);
 router.get("/logout", logout);
-router.get("/users", users);
 router.get("/delete", deleteCollection);
+router.get("/singleproduct/:id", single_product);
 router.get("/product/:name", search_product);
 
 // PUT

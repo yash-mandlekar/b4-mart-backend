@@ -67,6 +67,7 @@ const userSchema = new mongoose.Schema({
       ref: "product",
     },
   ],
+  // For ShopKeeper
   orders: [
     {
       customer_id: {

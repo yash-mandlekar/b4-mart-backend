@@ -11,15 +11,24 @@ const {
   upgrade_role,
   create_shop,
   all_shop,
+  delete_shop,
+  all_user,
+  delete_user,
 } = require("../controller/shopController");
 
 // Authentication
-router.post("/shop", create_shop).get("/shop", all_shop);
+router
+  .post("/shop", create_shop)
+  .get("/shop", all_shop)
+  .delete("/shop/:id", delete_shop);
 
 router.post("/login", login);
 
 router.post("/upgrade", upgrade_role);
 router.post("/many-data", product_data);
+
+// User CRUD Routes
+router.get("/user", all_user).delete("/user/:id", delete_user);
 
 // Product CRUD Routes
 router

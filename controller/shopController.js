@@ -8,12 +8,15 @@ exports.create_shop = async (req, res) => {
   try {
     const user = await userModel.findOne({ contact: req.body.contact });
     if (user) {
-      return res.status(200).send("User already exists");
+      return res.status(200).json({ message: "User already exists" });
     }
     const newuser = await userModel.create(req.body);
     newuser.role = "shop";
     await newuser.save();
-    res.status(201).json({ message: "Shop created successfully" });
+
+    res
+      .status(201)
+      .json({ message: "Shop created successfully", user: newuser });
   } catch (err) {
     res.status(401).json({ messege: err });
   }
@@ -23,6 +26,14 @@ exports.all_shop = catchAsyncErrors(async (req, res) => {
   const shops = await userModel.find({ role: "shop" });
   res.json({ message: "All Shops", shops });
 });
+exports.delete_shop = async (req, res) => {
+  try {
+    await userModel.findOneAndDelete({ _id: req.params.id });
+    res.status(201).json({ message: "Shop deleted successfully" });
+  } catch (err) {
+    res.status(401).json({ messege: err });
+  }
+};
 
 exports.login = async (req, res) => {
   try {
@@ -56,8 +67,8 @@ exports.login = async (req, res) => {
 exports.upgrade_role = async (req, res) => {
   try {
     const user = await userModel.findOneAndUpdate(
-      { _id: req.body.id },
-      { role: "shop" }
+      { contact: req.body.contact },
+      { role: "user" }
     );
     res.json(user);
   } catch (err) {
@@ -73,6 +84,19 @@ exports.product_data = async (req, res) => {
     res.status(500).json({ message: err });
   }
 };
+// Users
+
+exports.all_user = async (req, res) => {
+  const user = await userModel.find();
+  res.json(user);
+};
+
+exports.delete_user = async (req, res) => {
+  const user = await userModel.findOneAndDelete({ _id: req.params.id });
+  res.json({ message: "User deleted successfully", user: user.contact });
+};
+
+// Products
 
 exports.add_product = async (req, res) => {
   try {
@@ -125,6 +149,8 @@ exports.delete_product = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// Orders
 
 exports.all_orders = async (req, res) => {
   try {

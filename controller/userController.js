@@ -3,11 +3,6 @@ const productSchema = require("../models/productModel");
 const { sendtoken } = require("../utils/sendToken");
 const { catchAsyncErrors } = require("../middleware/catchAsyncErrors");
 
-
-exports.users = async (req, res) => {
-  const user = await UserSchema.find();
-  res.json(user);
-};
 exports.deleteCollection = async (req, res) => {
   await UserSchema.deleteMany();
   const user = await UserSchema.find();
@@ -15,13 +10,12 @@ exports.deleteCollection = async (req, res) => {
 };
 
 exports.login = catchAsyncErrors(async (req, res) => {
-  const { contact, username } = req.body;
+  const { contact } = req.body;
   const user = await UserSchema.findOne({ contact: contact });
   const otp = generateOTP();
 
   if (!user) {
     const newuser = await UserSchema.create({
-      username: username,
       contact: contact,
       otp: otp,
       password: contact,
@@ -112,6 +106,16 @@ exports.profileupdate = async (req, res) => {
   }
 };
 
+exports.single_product = async (req, res) => {
+  try {
+    const product = await productSchema.findOne({ _id: req.params.id });
+    if (!product) return res.json({ message: "product not found" });
+    res.json({ message: "Single Product Found", data: product });
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
 exports.search_product = async (req, res) => {
   try {
     const product = await productSchema.find({
