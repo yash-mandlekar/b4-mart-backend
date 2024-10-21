@@ -2,6 +2,7 @@ const UserSchema = require("../models/userModel");
 const productSchema = require("../models/productModel");
 const { sendtoken } = require("../utils/sendToken");
 const { catchAsyncErrors } = require("../middleware/catchAsyncErrors");
+const { default: mongoose } = require("mongoose");
 
 exports.deleteCollection = async (req, res) => {
   await UserSchema.deleteMany();
@@ -113,7 +114,7 @@ exports.single_product = async (req, res) => {
     res.json({ message: "Single Product Found", data: product });
   } catch (error) {
     console.log("error", error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(404).json({ message: "Product Not Found" });
   }
 };
 exports.search_product = async (req, res) => {
@@ -133,32 +134,20 @@ exports.search_product = async (req, res) => {
 
 exports.add_cart = async (req, res) => {
   try {
-    const { product_id, price, customer_id, shop_id } = req.body;
-
-    const userWithProduct = await UserSchema.findOne({
-      _id: customer_id,
-      "cart.product_id": product_id,
-    });
-
-    if (userWithProduct) {
-      const updatedCart = await UserSchema.updateOne(
-        { customer_id, "cart.product_id": product_id },
-        { $set: { "cart.$.price": price, "cart.$.shop_id": shop_id } }
-      );
-      return res.status(200).json({ message: "Cart updated successfully" });
-    } else {
-      const newProduct = {
-        product_id,
-        price,
-        shop_id,
-      };
-
-      const updatedUser = await UserSchema.updateOne(
-        { _id: customer_id },
-        { $push: { cart: newProduct } }
-      );
-      return res.status(201).json({ message: "Product added to cart" });
+    const user = await UserSchema.findOne({ _id: req.id });
+    let { cart } = user;
+    let c = -1;
+    if (cart.product == req.params.id) {
+      if(cart.count-c<1){
+        cart.filter(e=>{
+          e 
+        })
+      }
     }
+    cart.push({ product: req.params.id, count: req.body.count });
+    await user.save();
+
+    return res.status(201).json({ message: "Product added to cart" });
   } catch (error) {
     console.log("error", error);
     return res.status(500).json({ message: "Server error" });

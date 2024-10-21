@@ -26,6 +26,12 @@ exports.all_shop = catchAsyncErrors(async (req, res) => {
   const shops = await userModel.find({ role: "shop" });
   res.json({ message: "All Shops", shops });
 });
+exports.singleshop_products = async (req, res) => {
+  const user = await userModel
+    .findById({ _id: req.params.id })
+    .populate("products");
+  res.json({ message: "All Products by shop", products: user.products });
+};
 exports.delete_shop = async (req, res) => {
   try {
     await userModel.findOneAndDelete({ _id: req.params.id });
@@ -68,7 +74,7 @@ exports.upgrade_role = async (req, res) => {
   try {
     const user = await userModel.findOneAndUpdate(
       { contact: req.body.contact },
-      { role: "user" }
+      { role: "shop" }
     );
     res.json(user);
   } catch (err) {
@@ -101,6 +107,11 @@ exports.delete_user = async (req, res) => {
 exports.add_product = async (req, res) => {
   try {
     const product = await productModel.create(req.body);
+    product.shop_id = req.id;
+    await product.save();
+    const shop = await userModel.findOne({ _id: req.id });
+    shop.products.push(product._id);
+    await shop.save();
     res.status(201).json({ message: "Created Product", product: product });
   } catch (err) {
     res.status(400).json({ message: err.message }); // Use 400 for validation errs
@@ -145,6 +156,14 @@ exports.delete_product = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
     res.status(200).json({ message: "Product deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+exports.delete_allproduct = async (req, res) => {
+  try {
+    await productModel.deleteMany();
+    res.status(200).json({ message: "All Product deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -7,7 +7,7 @@ exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
   if (!token) {
     return res.json({
       success: false,
-      message: "Please login ",
+      message: "Please Login",
     });
   }
 

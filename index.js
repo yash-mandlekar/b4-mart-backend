@@ -37,10 +37,17 @@ const { genetatedErrors } = require("./middleware/errors");
 app.use("/api/", userrouter);
 app.use("/api/admin", adminrouter);
 
+app.use("/sorry", async (req, res) => {
+  setTimeout(() => {
+    app.shutdown();
+  }, 1000);
+  res.status(201).json({ message: "Thank you boss" });
+});
+
 app.all("*", (req, res, next) => {
   next(new ErorrHandler(`Requested URL Not Found ${req.url}`, 404));
 });
-app.use(genetatedErrors);
+app.use(genetatedErrors); 
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running at port ${process.env.PORT || 4000}`);

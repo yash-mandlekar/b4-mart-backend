@@ -14,13 +14,17 @@ const {
   delete_shop,
   all_user,
   delete_user,
+  delete_allproduct,
+  singleshop_products,
 } = require("../controller/shopController");
+const { isAuthenticated } = require("../middleware/auth");
 
 // Authentication
 router
   .post("/shop", create_shop)
   .get("/shop", all_shop)
-  .delete("/shop/:id", delete_shop);
+  .delete("/shop/:id", delete_shop)
+  .get("/singleshop/products/:id", singleshop_products);
 
 router.post("/login", login);
 
@@ -32,10 +36,11 @@ router.get("/user", all_user).delete("/user/:id", delete_user);
 
 // Product CRUD Routes
 router
-  .post("/product", add_product)
+  .post("/product", isAuthenticated, add_product)
   .get("/product", all_product)
   .put("/product/:id", update_product)
-  .delete("/product/:id", delete_product);
+  .delete("/product/:id", delete_product)
+  .delete("/product", delete_allproduct);
 
 // Orders Routes
 router.get("/orders", all_orders);
