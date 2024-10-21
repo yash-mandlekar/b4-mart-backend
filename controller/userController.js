@@ -58,7 +58,7 @@ exports.logout = (req, res) => {
 };
 
 exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
-  const user = await UserSchema.findById(req.id);
+  const user = await UserSchema.findById(req.id).populate("cart.product")
   res.status(200).json({
     success: true,
     user,
@@ -136,18 +136,49 @@ exports.add_cart = async (req, res) => {
   try {
     const user = await UserSchema.findOne({ _id: req.id });
     let { cart } = user;
-    let c = -1;
-    if (cart.product == req.params.id) {
-      if(cart.count-c<1){
-        cart.filter(e=>{
-          e 
-        })
-      }
-    }
-    cart.push({ product: req.params.id, count: req.body.count });
-    await user.save();
+    const productId = new mongoose.Types.ObjectId(req.params.id);
 
-    return res.status(201).json({ message: "Product added to cart" });
+    const productInCart = cart.find((e) => e.product.equals(productId));
+    if (productInCart) {
+      productInCart.count++;
+      await user.save();
+    } else {
+      cart.push({ product: req.params.id, count: 1 });
+      await user.save();
+    }
+
+    return res.status(201).json({ message: "Product added to cart", cart });
+  } catch (error) {
+    console.log("error", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+exports.remove_cart = async (req, res) => {
+  try {
+    const user = await UserSchema.findOne({ _id: req.id });
+    let { cart } = user;
+    const productId = new mongoose.Types.ObjectId(req.params.id);
+
+    // Find the product in the cart
+    const productInCart = cart.find((e) => e.product.equals(productId));
+
+    if (productInCart) {
+      if (productInCart.count > 1) {
+        // If count is more than 1, decrement the count
+        productInCart.count--;
+      } else {
+        // If count is 1, remove the product from the cart
+        cart = cart.filter((e) => !e.product.equals(productId));
+        user.cart = cart; // Assign the filtered cart back to the user
+      }
+
+      await user.save(); // Save changes to the user
+      return res
+        .status(200)
+        .json({ message: "Product removed from cart", cart });
+    } else {
+      return res.status(404).json({ message: "Product not found in cart" });
+    }
   } catch (error) {
     console.log("error", error);
     return res.status(500).json({ message: "Server error" });
