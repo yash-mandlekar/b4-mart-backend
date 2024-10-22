@@ -3,6 +3,7 @@ const productSchema = require("../models/productModel");
 const { sendtoken } = require("../utils/sendToken");
 const { catchAsyncErrors } = require("../middleware/catchAsyncErrors");
 const { default: mongoose } = require("mongoose");
+const Razorpay = require("razorpay");
 
 exports.deleteCollection = async (req, res) => {
   await UserSchema.deleteMany();
@@ -211,6 +212,35 @@ exports.get_address = async (req, res) => {
       }
     })
     .catch((error) => console.error("Error:", error));
+};
+
+// create order
+exports.create_order = async (req, res) => {
+  const user = await UserSchema.findOne({ _id: req.id }).populate(
+    "cart.product"
+  );
+  var tot = 0;
+  user.cart.map((e) => {
+    tot += e.count * e.product.price;
+  });
+  try {
+    const razorpay = new Razorpay({
+      key_id: "rzp_test_LQzqvbK2cWMGRg", // rzp_test_GuqZTaK14cKpuo
+      key_secret: "PwCxDvLmPtKVKxZP5BM7eFFx", // 2PGLEdDfYbSGA9oDmIWtj
+    });
+
+    const options = {
+      amount: tot * 100, 
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
+    const order = await razorpay.orders.create(options); // i am getting error in this line 
+    console.log(order);
+    res.status(200).json(order);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
 };
 function generateOTP() {
   const digits = "0123456789";
