@@ -58,7 +58,7 @@ exports.logout = (req, res) => {
 };
 
 exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
-  const user = await UserSchema.findById(req.id).populate("cart.product")
+  const user = await UserSchema.findById(req.id).populate("cart.product");
   res.status(200).json({
     success: true,
     user,
@@ -141,13 +141,17 @@ exports.add_cart = async (req, res) => {
     const productInCart = cart.find((e) => e.product.equals(productId));
     if (productInCart) {
       productInCart.count++;
-      await user.save();
     } else {
       cart.push({ product: req.params.id, count: 1 });
-      await user.save();
     }
+    await user.save();
+    const founduser = await UserSchema.findOne({ _id: req.id }).populate(
+      "cart.product"
+    );
 
-    return res.status(201).json({ message: "Product added to cart", cart });
+    return res
+      .status(201)
+      .json({ message: "Product added to cart", cart: founduser.cart });
   } catch (error) {
     console.log("error", error);
     return res.status(500).json({ message: "Server error" });
@@ -173,9 +177,13 @@ exports.remove_cart = async (req, res) => {
       }
 
       await user.save(); // Save changes to the user
+
+      const founduser = await UserSchema.findOne({ _id: req.id }).populate(
+        "cart.product"
+      );
       return res
         .status(200)
-        .json({ message: "Product removed from cart", cart });
+        .json({ message: "Product removed from cart", cart: founduser.cart });
     } else {
       return res.status(404).json({ message: "Product not found in cart" });
     }
