@@ -67,42 +67,40 @@ exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// const {
+//   email,
+//   profilepic,
+//   addressline1,
+//   addressline2,
+//   phone,
+//   city,
+//   pincode,
+//   state,
+//   country,
+// } = req.body;
+
+// // Find user by email
+// const user = await UserSchema.findOne({ email: email });
+// if (!user) {
+//   return res.status(404).json({ message: "User not found" });
+// }
+
+// // Update user's profile fields
+// if (profilepic) user.profilepic = profilepic;
+// if (addressline1) user.addressline1 = addressline1;
+// if (addressline2) user.addressline2 = addressline2;
+// if (phone) user.phone = phone;
+// if (city) user.city = city;
+// if (pincode) user.pincode = pincode;
+// if (state) user.state = state;
+// if (country) user.country = country;
+
+// // Save the updated user document
+// const updatedUser = await user.save();
 exports.profileupdate = async (req, res) => {
   try {
-    const {
-      email,
-      profilepic,
-      addressline1,
-      addressline2,
-      phone,
-      city,
-      pincode,
-      state,
-      country,
-    } = req.body;
-
-    // Find user by email
-    const user = await UserSchema.findOne({ email: email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Update user's profile fields
-    if (profilepic) user.profilepic = profilepic;
-    if (addressline1) user.addressline1 = addressline1;
-    if (addressline2) user.addressline2 = addressline2;
-    if (phone) user.phone = phone;
-    if (city) user.city = city;
-    if (pincode) user.pincode = pincode;
-    if (state) user.state = state;
-    if (country) user.country = country;
-
-    // Save the updated user document
-    const updatedUser = await user.save();
-
-    res
-      .status(200)
-      .json({ message: "Profile updated successfully", user: updatedUser });
+    const user = await UserSchema.findOneAndUpdate({ _id: req.id }, req.body);
+    res.status(200).json({ message: "Profile updated successfully", user });
   } catch (error) {
     console.log("Error updating profile:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -228,6 +226,11 @@ exports.create_order = async (req, res) => {
       tot += e.count * e.product.price;
     });
 
+    user.cart.forEach(async (e) => {
+      const shop = await UserSchema.findOne({ _id: e.product.shop_id });
+      shop.shoporders.push({ user: user._id, product: e.product._id });
+      await shop.save();
+    });
     const order = await orderSchema.create({
       userId: user._id,
       products: user.cart,
@@ -242,13 +245,20 @@ exports.create_order = async (req, res) => {
       paymentMethod: paymentMethod,
       paymentStatus: paymentMethod == "COD" ? "Pending" : "Completed",
     });
-    user.cart = []
-    await user.save()
-    res.json({ order });
+    user.cart = [];
+    user.orders.push(order._id);
+    await user.save();
+    res.json({ user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Something went wrong" });
   }
+};
+exports.user_order = async (req, res) => {
+  const user_order = await UserSchema.findOne({ _id: req.id }).populate(
+    "orders"
+  );
+  res.json({ user_order });
 };
 
 exports.payment_gateway = async (req, res) => {

@@ -81,11 +81,17 @@ const userSchema = new mongoose.Schema({
   // For ShopKeeper
   orders: [
     {
-      customer_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "order",
+    },
+  ],
+  shoporders: [
+    {
+      user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
       },
-      product_id: {
+      product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "product",
       },

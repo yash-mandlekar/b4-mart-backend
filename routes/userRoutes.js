@@ -13,6 +13,7 @@ const {
   single_product,
   remove_cart,
   create_order,
+  user_order,
   payment_gateway,
 } = require("../controller/userController");
 const { isAuthenticated } = require("../middleware/auth");
@@ -25,6 +26,9 @@ router.get("/delete", deleteCollection);
 router.get("/singleproduct/:id", single_product);
 router.get("/product/:name", search_product);
 router.get("/search", search_product);
+router.get("/payment_gateway",isAuthenticated, payment_gateway);
+router.get("/user_order",isAuthenticated, user_order);
+
 
 // PUT
 router.put("/profileupdate", profileupdate);
@@ -36,6 +40,5 @@ router.post("/otp", verifyotp);
 router.post("/add_cart/:id", isAuthenticated, add_cart);
 router.post("/remove_cart/:id", isAuthenticated, remove_cart);
 router.post("/create_order",isAuthenticated, create_order);
-router.get("/payment_gateway",isAuthenticated, payment_gateway);
 
 module.exports = router;
