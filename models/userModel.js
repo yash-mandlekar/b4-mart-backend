@@ -33,10 +33,16 @@ const userSchema = new mongoose.Schema({
   profilepic: {
     type: String,
   },
-  address: {
+  city: {
     type: String,
   },
-  city: {
+  area: {
+    type: String,
+  },
+  house_no: {
+    type: String,
+  },
+  landmark: {
     type: String,
   },
   pincode: {

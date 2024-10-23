@@ -1,5 +1,6 @@
 const UserSchema = require("../models/userModel");
 const productSchema = require("../models/productModel");
+const orderSchema = require("../models/orderModel");
 const { sendtoken } = require("../utils/sendToken");
 const { catchAsyncErrors } = require("../middleware/catchAsyncErrors");
 const { default: mongoose } = require("mongoose");
@@ -120,13 +121,14 @@ exports.single_product = async (req, res) => {
 };
 exports.search_product = async (req, res) => {
   try {
-    const product = await productSchema.find({
+    const { search_product } = req.body;
+    const products = await productSchema.find({
       $or: [
-        { product_name: { $regex: req.params.name, $options: "i" } },
-        { category: { $regex: req.params.name, $options: "i" } },
+        { product_name: { $regex: search_product, $options: "i" } },
+        { category: { $regex: search_product, $options: "i" } },
       ],
     });
-    res.json(product);
+    res.json(products);
   } catch (error) {
     console.log("error", error);
     res.status(500).json({ message: "Server Error" });
@@ -216,6 +218,40 @@ exports.get_address = async (req, res) => {
 
 // create order
 exports.create_order = async (req, res) => {
+  const { paymentMethod, city, area, house_no, landmark, pincode } = req.body;
+  try {
+    const user = await UserSchema.findOne({ _id: req.id }).populate(
+      "cart.product"
+    );
+    var tot = 0;
+    user.cart.map((e) => {
+      tot += e.count * e.product.price;
+    });
+
+    const order = await orderSchema.create({
+      userId: user._id,
+      products: user.cart,
+      totalAmount: tot,
+      shippingAddress: {
+        city: city,
+        area: area,
+        house_no: house_no,
+        landmark: landmark && landmark,
+        pincode: pincode,
+      },
+      paymentMethod: paymentMethod,
+      paymentStatus: paymentMethod == "COD" ? "Pending" : "Completed",
+    });
+    user.cart = []
+    await user.save()
+    res.json({ order });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+exports.payment_gateway = async (req, res) => {
   const user = await UserSchema.findOne({ _id: req.id }).populate(
     "cart.product"
   );
@@ -223,25 +259,21 @@ exports.create_order = async (req, res) => {
   user.cart.map((e) => {
     tot += e.count * e.product.price;
   });
-  try {
-    const razorpay = new Razorpay({
-      key_id: "rzp_test_LQzqvbK2cWMGRg", // rzp_test_GuqZTaK14cKpuo
-      key_secret: "PwCxDvLmPtKVKxZP5BM7eFFx", // 2PGLEdDfYbSGA9oDmIWtj
-    });
 
-    const options = {
-      amount: tot * 100, 
-      currency: "INR",
-      receipt: `receipt_${Date.now()}`,
-    };
-    const order = await razorpay.orders.create(options); // i am getting error in this line 
-    console.log(order);
-    res.status(200).json(order);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong" });
-  }
+  const razorpay = new Razorpay({
+    key_id: "rzp_test_LQzqvbK2cWMGRg", // rzp_test_GuqZTaK14cKpuo
+    key_secret: "PwCxDvLmPtKVKxZP5BM7eFFx", // 2PGLEdDfYbSGA9oDmIWtj
+  });
+
+  const options = {
+    amount: tot * 100,
+    currency: "INR",
+    receipt: `receipt_${Date.now()}`,
+  };
+  const order = await razorpay.orders.create(options); // i am getting error in this line
+  res.status(200).json(order);
 };
+
 function generateOTP() {
   const digits = "0123456789";
   let otp = "";
