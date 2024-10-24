@@ -31,7 +31,7 @@ router.get("/user_order",isAuthenticated, user_order);
 
 
 // PUT
-router.put("/profileupdate", profileupdate);
+router.put("/profileupdate",isAuthenticated, profileupdate);
 router.put("/get_address", get_address);
 
 // POST

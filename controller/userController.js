@@ -99,7 +99,7 @@ exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
 // const updatedUser = await user.save();
 exports.profileupdate = async (req, res) => {
   try {
-    const user = await UserSchema.findOneAndUpdate({ _id: req.id }, req.body);
+    const user = await UserSchema.findOneAndUpdate({ _id:req.id  }, req.body, { new: true });
     res.status(200).json({ message: "Profile updated successfully", user });
   } catch (error) {
     console.log("Error updating profile:", error);
