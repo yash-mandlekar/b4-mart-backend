@@ -255,10 +255,8 @@ exports.create_order = async (req, res) => {
   }
 };
 exports.user_order = async (req, res) => {
-  const user_order = await UserSchema.findOne({ _id: req.id }).populate(
-    "orders"
-  );
-  res.json({ user_order });
+  const user = await UserSchema.findOne({ _id: req.id }).populate("orders");
+  res.status(200).json({ orders: user.orders });
 };
 
 exports.payment_gateway = async (req, res) => {
