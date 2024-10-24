@@ -15,6 +15,7 @@ const {
   create_order,
   user_order,
   payment_gateway,
+  update_profile,
 } = require("../controller/userController");
 const { isAuthenticated } = require("../middleware/auth");
 const router = express.Router();
@@ -40,5 +41,6 @@ router.post("/otp", verifyotp);
 router.post("/add_cart/:id", isAuthenticated, add_cart);
 router.post("/remove_cart/:id", isAuthenticated, remove_cart);
 router.post("/create_order",isAuthenticated, create_order);
+router.post("/update_profile",isAuthenticated, update_profile);
 
 module.exports = router;

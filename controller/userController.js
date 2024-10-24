@@ -99,7 +99,9 @@ exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
 // const updatedUser = await user.save();
 exports.profileupdate = async (req, res) => {
   try {
-    const user = await UserSchema.findOneAndUpdate({ _id:req.id  }, req.body, { new: true });
+    const user = await UserSchema.findOneAndUpdate({ _id: req.id }, req.body, {
+      new: true,
+    });
     res.status(200).json({ message: "Profile updated successfully", user });
   } catch (error) {
     console.log("Error updating profile:", error);
@@ -266,6 +268,12 @@ exports.user_order = async (req, res) => {
     },
   });
   res.status(200).json({ orders: user.orders });
+};
+exports.update_profile = async (req, res) => {
+  const user = await UserSchema.findOne({ _id: req.id });
+  user.profilepic = req.body.url;
+  await user.save();
+  res.status(200).json({ user });
 };
 
 exports.payment_gateway = async (req, res) => {
