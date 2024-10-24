@@ -255,7 +255,16 @@ exports.create_order = async (req, res) => {
   }
 };
 exports.user_order = async (req, res) => {
-  const user = await UserSchema.findOne({ _id: req.id }).populate("orders");
+  const user = await UserSchema.findOne({ _id: req.id }).populate({
+    path: "orders",
+    populate: {
+      path: "products",
+      populate: {
+        path: "product",
+        model: "product",
+      },
+    },
+  });
   res.status(200).json({ orders: user.orders });
 };
 
